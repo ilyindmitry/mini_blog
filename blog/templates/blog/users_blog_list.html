@@ -1,0 +1,18 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>My Blogs</h1>
+
+    {% if blog_list %}
+        <ul>
+
+            {% for blog in blog_list %}
+                <li>
+                    <a href="{{ blog.get_absolute_url }}">{{ blog.name }}</a> ({{ blog.date }}) <a href="{% url 'blog-update' blog.pk %}">Edit</a> | <a href="{% url 'blog-delete' blog.pk %}">Delete</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>There are no books borrowed.</p>
+    {% endif %}
+{% endblock %}

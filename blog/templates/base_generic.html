@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block title %}<title>Blog</title>{% endblock %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <script src="{% static 'scripts/jquery-1.12.4.min.js' %}"></script>
+    <script src="{% static 'scripts/bootstrap.min.js' %}"></script>
+</head>
+<body>
+    <div class="row">
+        <div class="col-sm-2">
+            {% block sidebar %}
+             <ul class="sidebar-nav" style="list-style: none; margin-top: 20px; padding-left: 30px;">
+                <li><a href="{% url 'index' %}">Home</a></li>
+                <li><a href="{% url 'blogs' %}">All blogs</a></li>
+                <li><a href="{% url 'bloggers' %}">All bloggers</a></li>
+             </ul>
+             {% if user.is_authenticated %}
+                 <ul class="sidebar-nav" style="list-style: none; margin-top: 20px; padding-left: 30px;">
+                    <li>User: {{ user.get_username }}</li>
+                    <li><a href="{% url 'logout'%}">Logout</a></li>
+                    <li><a href="{% url 'my-blogs'%}">My blogs</a></li>
+                    <li><a href="{% url 'blog-create'%}">Create new blog</a></li>
+                    <li><a href="{% url 'update-profile'%}">Edit profile</a></li>
+                    <li><a href="{% url 'delete-profile'%}">Delete profile</a></li>
+                 </ul>
+             {% else %}
+                 <ul class="sidebar-nav" style="list-style: none; margin-top: 20px; padding-left: 30px;">
+                     <li><a href="{% url 'login'%}?next={{request.path}}">Login</a> | <a href="{% url 'signup'%}">Sign Up</a></li>
+                 </ul>
+             {% endif %}
+            {% endblock %}
+        </div>
+        <div class="col-sm-10">
+            {% block content %}{% endblock %}
+
+            {% block pagination %}
+                {% if is_paginated %}
+                    <div class="pagination">
+                        <span class="page-links">
+                            {% if page_obj.has_previous %}
+                                <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
+                            {% endif %}
+                            <span class="page-current">
+                                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                            </span>
+                            {% if page_obj.has_next %}
+                                <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
+                            {% endif %}
+                        </span>
+                    </div>
+                {% endif %}
+            {% endblock %}
+        </div>
+    </div>
+</body>
+</html>

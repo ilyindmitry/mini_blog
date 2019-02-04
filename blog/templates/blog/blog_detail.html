@@ -1,0 +1,47 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <h1>{{ blog.name }}</h1>
+
+    <p><strong>Post date: </strong>{{blog.date }}</p>
+    <p><strong>Author: </strong><a href="{{ blog.author.get_absolute_url }}">{{ blog.author.user.username }}</a></p>
+    <p><strong>Description:</strong></p>
+    <p>{{ blog.description }}</p>
+
+    <p>
+        <h3>Comments</h3>
+        {% for comment in comment_pages %}
+            <p style="border-top: 1px solid lightgray; border-bottom: 1px solid lightgray; margin: 0px; padding: 10px">
+                {{ comment.author.user.username }} ({{ comment.date }}) - {{ comment.description }} {% if comment.author.user == user %}<a href="{% url 'comment-delete' blog.pk comment.pk %}">Delete</a>{% endif %}
+            </p>
+        {% endfor %}
+        {% block pagination_comments %}
+                    <div class="pagination">
+                        <span class="page-links">
+                            {% if comment_pages.has_previous %}
+                                <a href="{{ request.path }}?page={{ comment_pages.previous_page_number }}">previous</a>
+                            {% endif %}
+                            <span class="page-current">
+                                Page {{ comment_pages.number }} of {{ comment_pages.paginator.num_pages }}.
+                            </span>
+                            {% if comment_pages.has_next %}
+                                <a href="{{ request.path }}?page={{ comment_pages.next_page_number }}">next</a>
+                            {% endif %}
+                        </span>
+                    </div>
+            {% endblock %}
+    </p>
+
+
+
+    {% if form %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <table>
+            {{ form }}
+        </table>
+        <input type="submit" value="Submit">
+    </form>
+    {% endif %}
+
+{% endblock %}
